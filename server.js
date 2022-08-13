@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.static('public'));
 
 function createNewNote(body, notesArray) {
-    const note =body;
+    const note = body;
     notesArray.push(note);
     fs.writeFileSync(
         path.join(__dirname, './db/db.json'),
@@ -21,6 +21,7 @@ function createNewNote(body, notesArray) {
     );
     return note;
 }
+
 //Redirects '/' route to index
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
@@ -47,10 +48,21 @@ app.post('/api/notes', (req, res) => {
     //set id based on what  the next index of the array will be
     req.body.id = notes.length.toString();
 
-    // add nones to json file and notes array in this function
+    // add notes to json file and notes array in this function
     const note = createNewNote(req.body, notes);
 
     res.json(note);
+});
+
+app.delete('/api/notes/:id',  (req, res) => {
+    const { id } = req.params;
+
+    const notesIndex = notes.findIndex(p => p.id == id);
+
+    notes.splice(notesIndex, 1);
+
+    return res.send();
+   
 });
 
 app.listen(PORT, () => {
