@@ -58,11 +58,12 @@ app.delete('/api/notes/:id',  (req, res) => {
     const { id } = req.params;
 
     const notesIndex = notes.findIndex(p => p.id == id);
-
     notes.splice(notesIndex, 1);
 
-    return res.send();
-   
+    fs.writeFile("./db/db.json", JSON.stringify(notes),
+    function(err, data) {
+    res.json(notes);
+    })
 });
 
 app.listen(PORT, () => {
